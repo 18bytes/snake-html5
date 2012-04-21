@@ -89,26 +89,34 @@ class snake {
   }
   
   void moveUp() {
-    if (this.upPosition() > 0) {
+    if (this.upPosition() >= 0) {
       this.executeMove('up', 'y', this.upPosition());
+    } else {
+      this.whichWay('x');
     }
   }
   
   void moveDown() {
     if (this.downPosition() < this.canvas.height) {
       this.executeMove('down', 'y', this.downPosition());
+    } else {
+      this.whichWay('x');
     }
   }
   
   void moveLeft() {
     if (this.leftPosition() >= 0) {
       this.executeMove('left', 'x', this.leftPosition());
+    } else {
+      this.whichWay('y');
     }
   }
   
   void moveRight() {
     if (this.rightPosition() < this.canvas.width) {
       this.executeMove('right', 'x', this.rightPosition());
+    } else {
+      this.whichWay('y');
     }
   }
   
@@ -120,6 +128,14 @@ class snake {
       this.y = axisValue;
     }
     this.drawSake();
+  }
+  
+  whichWay(axisType) {
+    if (axisType == 'x') {
+      return (this.x > this.canvas.width / 2) ? this.moveLeft() : this.moveRight();
+    } else if (axisType == 'y') {
+      return (this.x > this.canvas.height / 2) ? this.moveUp() : this.moveDown();
+    }
   }
   
   
