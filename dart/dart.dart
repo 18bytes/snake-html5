@@ -5,6 +5,7 @@ class dart {
   int x = 0;
   int y = 0;
   int gridSize = 10;
+  String direction = "right";
   
   dart() {
   }
@@ -22,7 +23,9 @@ class dart {
     // This draws a square with the parameters from the variables set above
     ctx.fillRect(x, y, width, height);
     document.on.keyDown.add(handleEvent);
+    window.setInterval(moveSnake, 100);
   }
+  
 
   void handleEvent(event) {
     int keycode = 0;
@@ -30,23 +33,50 @@ class dart {
     switch (keycode) {
       // Left
       case 37:
-        print ("Test Left");
+        this.x = this.x - this.gridSize;
+        this.direction = "left";
         break;
       // Up
       case 38:
-        print ("Test Up");
+        this.y = this.y - this.gridSize;
+        this.direction = "up";
         break;
       // Right
       case 39: 
-        print ("Test Right");
+        this.x = this.x + this.gridSize;
+        this.direction = "right";
         break;
       // Down
-      case 40: 
-        print ("Test Down");
+      case 40:
+        this.y = this.y + this.gridSize;
+        this.direction = "down";
         break;
     }
+    this.drawSake();
+  }
+
+  void drawSake() {
+    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize);  
   }
   
+  void moveSnake() {
+    switch (direction) {
+      case 'left':
+        this.x = this.x - this.gridSize;
+        this.drawSake();
+        break;
+      case 'up':
+        this.y = this.y - this.gridSize;
+        break;
+      case 'right':
+        this.x = this.x + this.gridSize;
+        break;
+      case 'down':
+        this.y = this.y + this.gridSize;
+        break;
+    }
+    this.drawSake();
+  }
   
 
   
