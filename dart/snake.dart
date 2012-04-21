@@ -1,13 +1,13 @@
 #import('dart:html');
 
-class dart {
+class snake {
   CanvasRenderingContext2D ctx;
   int x = 0;
   int y = 0;
   int gridSize = 10;
   String direction = "right";
   
-  dart() {
+  snake() {
   }
 
   void run() {
@@ -83,5 +83,5 @@ class dart {
 }
 
 void main() {
-  new dart().run();
+  new snake().run();
 }
