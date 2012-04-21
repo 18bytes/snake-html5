@@ -8,8 +8,10 @@ class snake {
   int y = 0;
   int gridSize = 10;
   String direction = "right";
+  var snakeBody = null;
   
   snake() {
+    snakeBody = [];
   }
 
   void run() {
@@ -51,7 +53,17 @@ class snake {
   }
 
   void drawSake() {
-    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize);  
+    var coord = [this.x, this.y];
+    // Precondition check.
+    if (this.snakeBody == null) return;
+    
+    this.snakeBody.add(coord);
+    this.ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
+    if (this.snakeBody.length > 3) {
+      var itemToRemove = this.snakeBody[0];
+      this.snakeBody.removeRange(0, 1);
+      this.ctx.clearRect(itemToRemove[0], itemToRemove[1], this.gridSize, this.gridSize);
+    }
   }
   
   void moveSnake() {
@@ -137,7 +149,6 @@ class snake {
       return (this.x > this.canvas.height / 2) ? this.moveUp() : this.moveDown();
     }
   }
-  
   
 }
 
