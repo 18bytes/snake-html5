@@ -17,16 +17,20 @@ class Game {
   }
 
   void run() {
-    canvas = document.query("#canvas");
-    ctx = canvas.getContext("2d");
-    ctx.fillStyle = "rgb(200,0,0)";
     var xRect = 50;
     var yRect = 50;
     var width = 10;
     var height = 10;
+    
+    this.canvas = document.query("#canvas");
+    this.ctx = canvas.getContext("2d");
+    this.ctx.fillStyle = "rgb(200,0,0)";
+   
      
     document.on.keyDown.add(handleEvent);
     window.setInterval(moveSnake, 100);
+    
+    // Make food and start the snake
     this.makeFood();
     this.drawSnake();
   }
@@ -54,6 +58,9 @@ class Game {
     }
   }
 
+  /**
+   * Method draw a snake. 
+   */
   void drawSnake() {
     var coord = [this.x, this.y];
     // Precondition check.
@@ -149,6 +156,9 @@ class Game {
     this.drawSnake();
   }
   
+  /**
+   * Method to decide which direction inwhich snake has to move when it hits the border.
+   */
   whichWay(axisType) {
     if (axisType == 'x') {
       return (this.x > this.canvas.width / 2) ? this.moveLeft() : this.moveRight();
@@ -157,18 +167,27 @@ class Game {
     }
   }
   
+  /**
+   *  Method creates the food for snake at random location on the canvas.
+   */
   void makeFood() {
     double rem = 0.0;
+    
+    // Get the random location for food and trim it
     this.xrand = (this.getRandom() * (this.canvas.width)).floor();
     this.yrand = (this.getRandom() * (this.canvas.height)).floor();
     rem = this.xrand % this.gridSize;
     this.xrand = this.xrand - rem;
     rem = this.yrand % this.gridSize;
     this.yrand = this.yrand - rem;
+    // Draw it!
     this.ctx.fillStyle = "rgb(10,100,0)";
     this.ctx.fillRect(xrand, yrand, this.gridSize, this.gridSize);
   }
   
+  /**
+   * Workaround to generate random number for a bug in Math.random() method in DART.
+   */
   double getRandom() {
     double rand = 0.0;
     for (int i = 0; i < this.randCount; i++) {
