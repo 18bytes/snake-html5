@@ -1,7 +1,9 @@
 #import('dart:html');
 
 class snake {
+  
   CanvasRenderingContext2D ctx;
+  CanvasElement canvas = null;
   int x = 0;
   int y = 0;
   int gridSize = 10;
@@ -11,17 +13,16 @@ class snake {
   }
 
   void run() {
-    CanvasElement canvas = document.query("#canvas");
+    canvas = document.query("#canvas");
     ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgb(200,0,0)";
-    // This sets some variables for demonstration purposes
-    var x = 50;
-    var y = 50;
+    var xRect = 50;
+    var yRect = 50;
     var width = 10;
     var height = 10;
      
     // This draws a square with the parameters from the variables set above
-    ctx.fillRect(x, y, width, height);
+    ctx.fillRect(xRect, yRect, width, height);
     document.on.keyDown.add(handleEvent);
     window.setInterval(moveSnake, 100);
   }
@@ -78,7 +79,56 @@ class snake {
     this.drawSake();
   }
   
-
+  int leftPosition() {
+    return this.x - this.gridSize;
+  }
+  
+  int rightPosition() {
+    return this.x + this.gridSize;
+  }
+  
+  int upPosition() {
+    return this.y - this.gridSize;
+  }
+  
+  int downPosition() {
+    return this.y + this.gridSize;
+  }
+  
+  void moveUp() {
+    if (this.upPosition() > 0) {
+      this.executeMove('up', 'y', this.upPosition());
+    }
+  }
+  
+  void moveDown() {
+    if (this.downPosition() < this.canvas.height) {
+      this.executeMove('down', 'y', this.downPosition());
+    }
+  }
+  
+  void moveLeft() {
+    if (this.leftPosition() >= 0) {
+      this.executeMove('left', 'x', this.leftPosition());
+    }
+  }
+  
+  void moveRight() {
+    if (this.rightPosition() < this.canvas.width) {
+      this.executeMove('right', 'x', this.rightPosition());
+    }
+  }
+  
+  void executeMove(dirValue, axisType, axisValue) {
+    this.direction = dirValue;
+    if (axisType == "x") {
+      this.x = axisValue;
+    } else if (axisType == "y") {
+      this.y = axisValue;
+    }
+    this.drawSake();
+  }
+  
   
 }
 
