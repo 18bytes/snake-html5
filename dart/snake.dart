@@ -27,33 +27,27 @@ class snake {
     window.setInterval(moveSnake, 100);
   }
   
-
   void handleEvent(event) {
     int keycode = 0;
     keycode = event.keyCode;
     switch (keycode) {
       // Left
       case 37:
-        this.x = this.x - this.gridSize;
-        this.direction = "left";
+        this.moveLeft();
         break;
       // Up
       case 38:
-        this.y = this.y - this.gridSize;
-        this.direction = "up";
+        this.moveUp();
         break;
       // Right
       case 39: 
-        this.x = this.x + this.gridSize;
-        this.direction = "right";
+        this.moveRight();
         break;
       // Down
       case 40:
-        this.y = this.y + this.gridSize;
-        this.direction = "down";
+        this.moveDown();
         break;
     }
-    this.drawSake();
   }
 
   void drawSake() {
@@ -63,20 +57,19 @@ class snake {
   void moveSnake() {
     switch (direction) {
       case 'left':
-        this.x = this.x - this.gridSize;
-        this.drawSake();
+        this.moveLeft();
         break;
       case 'up':
-        this.y = this.y - this.gridSize;
+        this.moveUp();
         break;
       case 'right':
-        this.x = this.x + this.gridSize;
+        this.moveRight();
         break;
       case 'down':
-        this.y = this.y + this.gridSize;
+        this.moveDown();
         break;
     }
-    this.drawSake();
+    
   }
   
   int leftPosition() {
