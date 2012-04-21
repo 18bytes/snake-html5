@@ -52,12 +52,13 @@ class snake {
     }
   }
 
-  void drawSake() {
+  void drawSnake() {
     var coord = [this.x, this.y];
     // Precondition check.
     if (this.snakeBody == null) return;
     
     this.snakeBody.add(coord);
+    this.ctx.fillStyle = "rgb(200,0,0)";
     this.ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
     if (this.snakeBody.length > 3) {
       var itemToRemove = this.snakeBody[0];
@@ -139,7 +140,7 @@ class snake {
     } else if (axisType == "y") {
       this.y = axisValue;
     }
-    this.drawSake();
+    this.drawSnake();
   }
   
   whichWay(axisType) {
@@ -148,6 +149,14 @@ class snake {
     } else if (axisType == 'y') {
       return (this.x > this.canvas.height / 2) ? this.moveUp() : this.moveDown();
     }
+  }
+  
+  void makeFood() {
+    var xrand = 0, yrand = 0;
+    xrand = (Math.random() * (this.canvas.width / this.gridSize)).floor();
+    yrand = (Math.random() * (this.canvas.height / this.gridSize)).floor();
+    this.ctx.fillStyle = "rgb(10,100,0)";
+    this.ctx.fillRect(xrand, yrand, this.gridSize, this.gridSize);
   }
   
 }
