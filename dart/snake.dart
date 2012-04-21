@@ -1,18 +1,18 @@
 #import('dart:html');
 
-class snake {
+class Game {
   CanvasRenderingContext2D ctx;
   CanvasElement canvas = null;
   int x = 0;
   int y = 0;
-  int gridSize = 10;
+  int gridSize = 20;
   String direction = "right";
   var snakeBody = null;
   int snakeLength = 3;
   var xrand = 0.0, yrand = 0.0;
   int randCount = 1;
   
-  snake() {
+  Game() {
     snakeBody = [];
   }
 
@@ -67,7 +67,6 @@ class snake {
       this.snakeBody.removeRange(0, 1);
       this.ctx.clearRect(itemToRemove[0], itemToRemove[1], this.gridSize, this.gridSize);
     }
-    print("x=" + this.x + "y=" + this.y + "xrand=" + this.xrand + "yrand=" + this.yrand);
     if (this.x == this.xrand && this.y == this.yrand) {
       this.makeFood();
       this.snakeLength = this.snakeLength + 1;
@@ -182,5 +181,5 @@ class snake {
 }
 
 void main() {
-  new snake().run();
+  new Game().run();
 }
