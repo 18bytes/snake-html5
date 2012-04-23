@@ -8,10 +8,13 @@ class Snake {
   String direction = "right";
   var snakeBody = null;
   int snakeLength = 3;
+  int maxWidth = 0;
+  int maxHeight = 0;
 
-  
-  Snake() {
+  Snake(int mxWidth, int mxHeight) {
     this.snakeBody = [];
+    this.maxWidth = mxWidth;
+    this.maxHeight = mxHeight;
   }
   
   /**
@@ -130,9 +133,10 @@ class Game {
   CanvasElement canvas = null;
   var xrand = 0.0, yrand = 0.0;
   int randCount = 1;
+  Snake snake = null;
   
   Game() {
-    snakeBody = [];
+    this.snake = new Snake();
   }
 
   void run() {
@@ -151,7 +155,7 @@ class Game {
     
     // Make food and start the snake
     this.makeFood();
-    this.drawSnake();
+    this.snake.drawSnake();
   }
   
   void handleEvent(event) {
@@ -160,19 +164,19 @@ class Game {
     switch (keycode) {
       // Left
       case 37:
-        this.moveLeft();
+        this.snake.moveLeft();
         break;
       // Up
       case 38:
-        this.moveUp();
+        this.snake.moveUp();
         break;
       // Right
       case 39: 
-        this.moveRight();
+        this.snake.moveRight();
         break;
       // Down
       case 40:
-        this.moveDown();
+        this.snake.moveDown();
         break;
     }
   }
