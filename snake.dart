@@ -20,41 +20,30 @@ class Snake {
   /**
    * Method to draw a snake. 
    */
-  void drawSnake() {
-    var coord = [this.x, this.y];
+  void drawSnake(CanvasRenderingContext2D ctx) {
+    var coord = null;
+
     // Precondition check.
     if (this.snakeBody == null) return;
+    if (ctx == null) return;
+
+    coord = [this.x, this.y];
     
     this.snakeBody.add(coord);
-    this.ctx.fillStyle = "rgb(200,0,0)";
-    this.ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
+    ctx.fillStyle = "rgb(200,0,0)";
+    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
     if (this.snakeBody.length > this.snakeLength) {
       var itemToRemove = this.snakeBody[0];
       this.snakeBody.removeRange(0, 1);
-      this.ctx.clearRect(itemToRemove[0], itemToRemove[1], this.gridSize, this.gridSize);
+      ctx.clearRect(itemToRemove[0], itemToRemove[1], this.gridSize, this.gridSize);
     }
+
     if (this.x == this.xrand && this.y == this.yrand) {
       this.makeFood();
       this.snakeLength = this.snakeLength + 1;
     }
   }
 
- 
-  int leftPosition() {
-    return this.x - this.gridSize;
-  }
-  
-  int rightPosition() {
-    return this.x + this.gridSize;
-  }
-  
-  int upPosition() {
-    return this.y - this.gridSize;
-  }
-  
-  int downPosition() {
-    return this.y + this.gridSize;
-  }
   
   void moveUp() {
     if (this.upPosition() >= 0) {
@@ -65,7 +54,7 @@ class Snake {
   }
   
   void moveDown() {
-    if (this.downPosition() < this.canvas.height) {
+    if (this.downPosition() < this.maxHeight) {
       this.executeMove('down', 'y', this.downPosition());
     } else {
       this.whichWay('x');
@@ -81,7 +70,7 @@ class Snake {
   }
   
   void moveRight() {
-    if (this.rightPosition() < this.canvas.width) {
+    if (this.rightPosition() < this.maxWidth) {
       this.executeMove('right', 'x', this.rightPosition());
     } else {
       this.whichWay('y');
@@ -103,29 +92,29 @@ class Snake {
    */
   whichWay(axisType) {
     if (axisType == 'x') {
-      return (this.x > this.canvas.width / 2) ? this.moveLeft() : this.moveRight();
+      return (this.x > this.maxWidth / 2) ? this.moveLeft() : this.moveRight();
     } else if (axisType == 'y') {
-      return (this.x > this.canvas.height / 2) ? this.moveUp() : this.moveDown();
+      return (this.x > this.maxHeight / 2) ? this.moveUp() : this.moveDown();
     }
   }
   
-  void moveSnake() {
-    switch (direction) {
-      case 'left':
-        this.moveLeft();
-        break;
-      case 'up':
-        this.moveUp();
-        break;
-      case 'right':
-        this.moveRight();
-        break;
-      case 'down':
-        this.moveDown();
-        break;
-    }
-    
+ 
+  int leftPosition() {
+    return this.x - this.gridSize;
   }
+  
+  int rightPosition() {
+    return this.x + this.gridSize;
+  }
+  
+  int upPosition() {
+    return this.y - this.gridSize;
+  }
+  
+  int downPosition() {
+    return this.y + this.gridSize;
+  }
+
 }
 
 class Game {
@@ -140,16 +129,15 @@ class Game {
   }
 
   void run() {
-    var xRect = 50;
-    var yRect = 50;
-    var width = 10;
-    var height = 10;
+    var xRect	= 50;
+    var yRect 	= 50;
+    var width 	= 10;
+    var height 	= 10;
     
     this.canvas = document.query("#canvas");
-    this.ctx = canvas.getContext("2d");
+    this.ctx 	= canvas.getContext("2d");
     this.ctx.fillStyle = "rgb(200,0,0)";
-   
-     
+        
     document.on.keyDown.add(handleEvent);
     window.setInterval(moveSnake, 100);
     
@@ -179,6 +167,24 @@ class Game {
         this.snake.moveDown();
         break;
     }
+  }
+
+  void moveSnake() {
+    switch (this.snake.direction) {
+      case 'left':
+        this.snake.moveLeft();
+        break;
+      case 'up':
+        this.snake.moveUp();
+        break;
+      case 'right':
+        this.snake.moveRight();
+        break;
+      case 'down':
+        this.snake.moveDown();
+        break;
+    }
+    
   }
 
   
