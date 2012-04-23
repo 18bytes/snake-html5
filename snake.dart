@@ -1,65 +1,21 @@
 #import('dart:html');
 
-class Game {
-  CanvasRenderingContext2D ctx;
-  CanvasElement canvas = null;
+class Snake {
+  var snakeBody = null;
   int x = 0;
   int y = 0;
   int gridSize = 20;
   String direction = "right";
   var snakeBody = null;
   int snakeLength = 3;
-  var xrand = 0.0, yrand = 0.0;
-  int randCount = 1;
-  
-  Game() {
-    snakeBody = [];
-  }
 
-  void run() {
-    var xRect = 50;
-    var yRect = 50;
-    var width = 10;
-    var height = 10;
-    
-    this.canvas = document.query("#canvas");
-    this.ctx = canvas.getContext("2d");
-    this.ctx.fillStyle = "rgb(200,0,0)";
-   
-     
-    document.on.keyDown.add(handleEvent);
-    window.setInterval(moveSnake, 100);
-    
-    // Make food and start the snake
-    this.makeFood();
-    this.drawSnake();
+  
+  Snake() {
+    this.snakeBody = [];
   }
   
-  void handleEvent(event) {
-    int keycode = 0;
-    keycode = event.keyCode;
-    switch (keycode) {
-      // Left
-      case 37:
-        this.moveLeft();
-        break;
-      // Up
-      case 38:
-        this.moveUp();
-        break;
-      // Right
-      case 39: 
-        this.moveRight();
-        break;
-      // Down
-      case 40:
-        this.moveDown();
-        break;
-    }
-  }
-
   /**
-   * Method draw a snake. 
+   * Method to draw a snake. 
    */
   void drawSnake() {
     var coord = [this.x, this.y];
@@ -79,25 +35,8 @@ class Game {
       this.snakeLength = this.snakeLength + 1;
     }
   }
-  
-  void moveSnake() {
-    switch (direction) {
-      case 'left':
-        this.moveLeft();
-        break;
-      case 'up':
-        this.moveUp();
-        break;
-      case 'right':
-        this.moveRight();
-        break;
-      case 'down':
-        this.moveDown();
-        break;
-    }
-    
-  }
-  
+
+ 
   int leftPosition() {
     return this.x - this.gridSize;
   }
@@ -166,6 +105,78 @@ class Game {
       return (this.x > this.canvas.height / 2) ? this.moveUp() : this.moveDown();
     }
   }
+  
+  void moveSnake() {
+    switch (direction) {
+      case 'left':
+        this.moveLeft();
+        break;
+      case 'up':
+        this.moveUp();
+        break;
+      case 'right':
+        this.moveRight();
+        break;
+      case 'down':
+        this.moveDown();
+        break;
+    }
+    
+  }
+}
+
+class Game {
+  CanvasRenderingContext2D ctx = null;
+  CanvasElement canvas = null;
+  var xrand = 0.0, yrand = 0.0;
+  int randCount = 1;
+  
+  Game() {
+    snakeBody = [];
+  }
+
+  void run() {
+    var xRect = 50;
+    var yRect = 50;
+    var width = 10;
+    var height = 10;
+    
+    this.canvas = document.query("#canvas");
+    this.ctx = canvas.getContext("2d");
+    this.ctx.fillStyle = "rgb(200,0,0)";
+   
+     
+    document.on.keyDown.add(handleEvent);
+    window.setInterval(moveSnake, 100);
+    
+    // Make food and start the snake
+    this.makeFood();
+    this.drawSnake();
+  }
+  
+  void handleEvent(event) {
+    int keycode = 0;
+    keycode = event.keyCode;
+    switch (keycode) {
+      // Left
+      case 37:
+        this.moveLeft();
+        break;
+      // Up
+      case 38:
+        this.moveUp();
+        break;
+      // Right
+      case 39: 
+        this.moveRight();
+        break;
+      // Down
+      case 40:
+        this.moveDown();
+        break;
+    }
+  }
+
   
   /**
    *  Method creates the food for snake at random location on the canvas.
