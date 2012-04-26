@@ -1,5 +1,10 @@
 #import('dart:html');
 
+
+void main() {
+  new Game().run();
+}
+
 class Snake {
   
   var snakeBody = null;
@@ -10,7 +15,7 @@ class Snake {
   
   int snakeLength = 3; // Default snake length
   
-  // Boundss
+  // Bounds
   int maxWidth = 0;
   int maxHeight = 0;
 
@@ -23,7 +28,7 @@ class Snake {
   /**
    * Method to draw a snake. 
    */
-  void drawSnake(CanvasRenderingContext2D ctx) {
+  void paint(CanvasRenderingContext2D ctx) {
     var coord = null;
 
     // Precondition check.
@@ -31,50 +36,46 @@ class Snake {
     if (ctx == null) return;
 
     coord = [this.x, this.y];
+    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
+    ctx.fillStyle = "rgb(200,0,0)";
     
     this.snakeBody.add(coord);
-    ctx.fillStyle = "rgb(200,0,0)";
-    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
+    
     if (this.snakeBody.length > this.snakeLength) {
       var itemToRemove = this.snakeBody[0];
       this.snakeBody.removeRange(0, 1);
       ctx.clearRect(itemToRemove[0], itemToRemove[1], this.gridSize, this.gridSize);
     }
 
-    if (this.x == this.xrand && this.y == this.yrand) {
-      this.makeFood();
-      this.snakeLength = this.snakeLength + 1;
-    }
   }
-
   
   void moveUp() {
-    if (this.upPosition() >= 0) {
-      this.executeMove('up', 'y', this.upPosition());
+    if (this.getUpPos() >= 0) {
+      this.executeMove('up', 'y', this.getUpPos());
     } else {
       this.whichWay('x');
     }
   }
   
   void moveDown() {
-    if (this.downPosition() < this.maxHeight) {
-      this.executeMove('down', 'y', this.downPosition());
+    if (this.getDownPos() < this.maxHeight) {
+      this.executeMove('down', 'y', this.getDownPos());
     } else {
       this.whichWay('x');
     }
   }
   
   void moveLeft() {
-    if (this.leftPosition() >= 0) {
-      this.executeMove('left', 'x', this.leftPosition());
+    if (this.getLeftPos() >= 0) {
+      this.executeMove('left', 'x', this.getLeftPos());
     } else {
       this.whichWay('y');
     }
   }
   
   void moveRight() {
-    if (this.rightPosition() < this.maxWidth) {
-      this.executeMove('right', 'x', this.rightPosition());
+    if (this.getRightPos() < this.maxWidth) {
+      this.executeMove('right', 'x', this.getRightPos());
     } else {
       this.whichWay('y');
     }
@@ -82,12 +83,11 @@ class Snake {
   
   void executeMove(dirValue, axisType, axisValue) {
     this.direction = dirValue;
-    if (axisType == "x") {
+    if (axisType == 'x') {
       this.x = axisValue;
-    } else if (axisType == "y") {
+    } else if (axisType == 'y') {
       this.y = axisValue;
     }
-    this.drawSnake();
   }
   
   /**
@@ -102,19 +102,19 @@ class Snake {
   }
   
  
-  int leftPosition() {
+  int getLeftPos() {
     return this.x - this.gridSize;
   }
   
-  int rightPosition() {
+  int getRightPos() {
     return this.x + this.gridSize;
   }
   
-  int upPosition() {
+  int getUpPos() {
     return this.y - this.gridSize;
   }
   
-  int downPosition() {
+  int getDownPos() {
     return this.y + this.gridSize;
   }
 
@@ -150,12 +150,13 @@ class Game {
     
     // Make food and start the snake
     this.makeFood();
-    this.snake.drawSnake(this.ctx);
+    this.snake.paint(this.ctx);
   }
   
   void handleEvent(event) {
     int keycode = 0;
     keycode = event.keyCode;
+
     switch (keycode) {
       // Left
       case 37:
@@ -177,6 +178,7 @@ class Game {
   }
 
   void moveSnake() {
+
     switch (this.snake.direction) {
       case 'left':
         this.snake.moveLeft();
@@ -191,9 +193,15 @@ class Game {
         this.snake.moveDown();
         break;
     }
-    
+    if (this.snake.x == this.xrand && this.snake.y == this.yrand) {
+      this.makeFood();
+      this.snake.snakeLength = this.snake.snakeLength + 1;
+    }
+
+    this.snake.paint(this.ctx);
   }
 
+  
   
   /**
    *  Method creates the food for snake at random location on the canvas.
@@ -227,6 +235,3 @@ class Game {
   
 }
 
-void main() {
-  new Game().run();
-}
