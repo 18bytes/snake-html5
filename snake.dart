@@ -1,13 +1,16 @@
 #import('dart:html');
 
 class Snake {
+  
   var snakeBody = null;
   int x = 0;
   int y = 0;
   int gridSize = 20;
   String direction = "right";
-  var snakeBody = null;
-  int snakeLength = 3;
+  
+  int snakeLength = 3; // Default snake length
+  
+  // Boundss
   int maxWidth = 0;
   int maxHeight = 0;
 
@@ -125,25 +128,29 @@ class Game {
   Snake snake = null;
   
   Game() {
-    this.snake = new Snake();
+    this.intialize();
   }
 
-  void run() {
-    var xRect	= 50;
-    var yRect 	= 50;
-    var width 	= 10;
-    var height 	= 10;
+  void intialize() {
+    var xRect = 50;
+    var yRect   = 50;
+    var width   = 10;
+    var height  = 10;
     
     this.canvas = document.query("#canvas");
-    this.ctx 	= canvas.getContext("2d");
+    this.ctx  = canvas.getContext("2d");
     this.ctx.fillStyle = "rgb(200,0,0)";
-        
+    
+    this.snake = new Snake(this.canvas.width, this.canvas.height);
+  }
+  
+  void run() {
     document.on.keyDown.add(handleEvent);
     window.setInterval(moveSnake, 100);
     
     // Make food and start the snake
     this.makeFood();
-    this.snake.drawSnake();
+    this.snake.drawSnake(this.ctx);
   }
   
   void handleEvent(event) {
@@ -197,13 +204,13 @@ class Game {
     // Get the random location for food and trim it
     this.xrand = (this.getRandom() * (this.canvas.width)).floor();
     this.yrand = (this.getRandom() * (this.canvas.height)).floor();
-    rem = this.xrand % this.gridSize;
+    rem = this.xrand % this.snake.gridSize;
     this.xrand = this.xrand - rem;
-    rem = this.yrand % this.gridSize;
+    rem = this.yrand % this.snake.gridSize;
     this.yrand = this.yrand - rem;
     // Draw it!
     this.ctx.fillStyle = "rgb(10,100,0)";
-    this.ctx.fillRect(xrand, yrand, this.gridSize, this.gridSize);
+    this.ctx.fillRect(xrand, yrand, this.snake.gridSize, this.snake.gridSize);
   }
   
   /**
