@@ -5,6 +5,125 @@ void main() {
   new Game().run();
 }
 
+class Game {
+  CanvasRenderingContext2D ctx = null;
+  CanvasElement canvas = null;
+  var xrand = 0.0, yrand = 0.0;
+  int randCount = 1;
+  Snake snake = null;
+  
+  Game() {
+    this.intialize();
+  }
+
+  void intialize() {
+    // Canvas
+    this.canvas         = document.query("#canvas");
+    this.ctx            = canvas.getContext("2d");
+    this.ctx.fillStyle  = "rgb(200,0,0)";
+    this.snake          = new Snake(this.canvas.width, this.canvas.height);
+    // Register keylistener
+    document.on.keyDown.add(handleEvent);
+  }
+  
+  void run() {
+    window.setInterval(moveSnake, 100); // Draw a running snake for every 100 ms
+    
+    // Make food and start the snake
+    this.makeFood();
+    this.snake.paint(this.ctx);
+  }
+  
+  void handleEvent(event) {
+    int keycode = 0;
+    keycode = event.keyCode;
+
+    switch (keycode) {
+      // Left
+      case 37:
+        this.snake.moveLeft();
+        break;
+      // Up
+      case 38:
+        this.snake.moveUp();
+        break;
+      // Right
+      case 39: 
+        this.snake.moveRight();
+        break;
+      // Down
+      case 40:
+        this.snake.moveDown();
+        break;
+    }
+    
+    if (this.snake.x == this.xrand && this.snake.y == this.yrand) {
+      this.makeFood();
+      this.snake.snakeLength = this.snake.snakeLength + 1;
+    }
+    
+    this.snake.paint(this.ctx);
+  }
+
+  void moveSnake() {
+
+    switch (this.snake.direction) {
+      case 'left':
+        this.snake.moveLeft();
+        break;
+      case 'up':
+        this.snake.moveUp();
+        break;
+      case 'right':
+        this.snake.moveRight();
+        break;
+      case 'down':
+        this.snake.moveDown();
+        break;
+    }
+    if (this.snake.x == this.xrand && this.snake.y == this.yrand) {
+      this.makeFood();
+      this.snake.snakeLength = this.snake.snakeLength + 1;
+    }
+
+    this.snake.paint(this.ctx);
+  }
+
+  
+  
+  /**
+   *  Method creates the food for snake at random location on the canvas.
+   */
+  void makeFood() {
+    double rem = 0.0;
+    // Get the random location for food and trim it
+    this.xrand = (this.getRandom() * (this.canvas.width)).floor();
+    this.yrand = (this.getRandom() * (this.canvas.height)).floor();
+    rem = this.xrand % this.snake.gridSize;
+    this.xrand = this.xrand - rem;
+    rem = this.yrand % this.snake.gridSize;
+    this.yrand = this.yrand - rem;
+    // Draw it!
+    this.ctx.fillStyle = "rgb(10,100,0)";
+    this.ctx.fillRect(xrand, yrand, this.snake.gridSize, this.snake.gridSize);
+  }
+  
+  /**
+   * Workaround to generate random number for a bug in Math.random() method in DART.
+   */
+  double getRandom() {
+    double rand = 0.0;
+    for (int i = 0; i < this.randCount; i++) {
+      rand = Math.random();
+    }
+    this.randCount = this.randCount + 1;
+    return rand;
+  }
+  
+}
+
+
+
 class Snake {
   var snakeBody = null;
   int x = 0;
@@ -117,117 +236,5 @@ class Snake {
     return this.y + this.gridSize;
   }
 
-}
-
-class Game {
-  CanvasRenderingContext2D ctx = null;
-  CanvasElement canvas = null;
-  var xrand = 0.0, yrand = 0.0;
-  int randCount = 1;
-  Snake snake = null;
-  
-  Game() {
-    this.intialize();
-  }
-
-  void intialize() {
-    // Canvas
-    this.canvas         = document.query("#canvas");
-    this.ctx            = canvas.getContext("2d");
-    this.ctx.fillStyle  = "rgb(200,0,0)";
-    this.snake          = new Snake(this.canvas.width, this.canvas.height);
-    
-    document.on.keyDown.add(handleEvent);
-  }
-  
-  void run() {
-    window.setInterval(moveSnake, 100);
-    
-    // Make food and start the snake
-    this.makeFood();
-    this.snake.paint(this.ctx);
-  }
-  
-  void handleEvent(event) {
-    int keycode = 0;
-    keycode = event.keyCode;
-
-    switch (keycode) {
-      // Left
-      case 37:
-        this.snake.moveLeft();
-        break;
-      // Up
-      case 38:
-        this.snake.moveUp();
-        break;
-      // Right
-      case 39: 
-        this.snake.moveRight();
-        break;
-      // Down
-      case 40:
-        this.snake.moveDown();
-        break;
-    }
-    this.snake.paint(this.ctx);
-  }
-
-  void moveSnake() {
-
-    switch (this.snake.direction) {
-      case 'left':
-        this.snake.moveLeft();
-        break;
-      case 'up':
-        this.snake.moveUp();
-        break;
-      case 'right':
-        this.snake.moveRight();
-        break;
-      case 'down':
-        this.snake.moveDown();
-        break;
-    }
-    if (this.snake.x == this.xrand && this.snake.y == this.yrand) {
-      this.makeFood();
-      this.snake.snakeLength = this.snake.snakeLength + 1;
-    }
-
-    this.snake.paint(this.ctx);
-  }
-
-  
-  
-  /**
-   *  Method creates the food for snake at random location on the canvas.
-   */
-  void makeFood() {
-    double rem = 0.0;
-    
-    // Get the random location for food and trim it
-    this.xrand = (this.getRandom() * (this.canvas.width)).floor();
-    this.yrand = (this.getRandom() * (this.canvas.height)).floor();
-    rem = this.xrand % this.snake.gridSize;
-    this.xrand = this.xrand - rem;
-    rem = this.yrand % this.snake.gridSize;
-    this.yrand = this.yrand - rem;
-    // Draw it!
-    this.ctx.fillStyle = "rgb(10,100,0)";
-    this.ctx.fillRect(xrand, yrand, this.snake.gridSize, this.snake.gridSize);
-  }
-  
-  /**
-   * Workaround to generate random number for a bug in Math.random() method in DART.
-   */
-  double getRandom() {
-    double rand = 0.0;
-    for (int i = 0; i < this.randCount; i++) {
-      rand = Math.random();
-    }
-    this.randCount = this.randCount + 1;
-    return rand;
-  }
-  
 }
 
