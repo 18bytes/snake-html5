@@ -36,10 +36,10 @@ class Snake {
     if (ctx == null) return;
 
     coord = [this.x, this.y];
-    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
-    ctx.fillStyle = "rgb(200,0,0)";
-    
     this.snakeBody.add(coord);
+    ctx.fillStyle = "rgb(200,0,0)";
+    ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize); 
+    
     
     if (this.snakeBody.length > this.snakeLength) {
       var itemToRemove = this.snakeBody[0];
@@ -132,20 +132,16 @@ class Game {
   }
 
   void intialize() {
-    var xRect = 50;
-    var yRect   = 50;
-    var width   = 10;
-    var height  = 10;
+    // Canvas
+    this.canvas         = document.query("#canvas");
+    this.ctx            = canvas.getContext("2d");
+    this.ctx.fillStyle  = "rgb(200,0,0)";
+    this.snake          = new Snake(this.canvas.width, this.canvas.height);
     
-    this.canvas = document.query("#canvas");
-    this.ctx  = canvas.getContext("2d");
-    this.ctx.fillStyle = "rgb(200,0,0)";
-    
-    this.snake = new Snake(this.canvas.width, this.canvas.height);
+    document.on.keyDown.add(handleEvent);
   }
   
   void run() {
-    document.on.keyDown.add(handleEvent);
     window.setInterval(moveSnake, 100);
     
     // Make food and start the snake
