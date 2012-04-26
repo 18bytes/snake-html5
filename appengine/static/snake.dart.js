@@ -2026,30 +2026,25 @@ var _pendingMeasurementFrameCallbacks;
 //  ********** Library snake **************
 // ********** Code for Game **************
 function Game() {
+  this.ctx = null;
   this.canvas = null;
-  this.x = (0);
-  this.y = (0);
-  this.gridSize = (20);
-  this.direction = "right";
-  this.snakeBody = null;
-  this.snakeLength = (3);
   this.xrand = (0.0);
   this.yrand = (0.0);
   this.randCount = (1);
-  this.snakeBody = [];
+  this.snake = null;
+  this.intialize();
 }
-Game.prototype.run = function() {
+Game.prototype.intialize = function() {
   this.canvas = get$$document().query("#canvas");
   this.ctx = this.canvas.getContext("2d");
   this.ctx.fillStyle = "rgb(200,0,0)";
-  var xRect = (50);
-  var yRect = (50);
-  var width = (10);
-  var height = (10);
+  this.snake = new Snake(this.canvas.width, this.canvas.height);
   get$$document().get$on().get$keyDown().add(this.get$handleEvent(), false);
+}
+Game.prototype.run = function() {
   get$$window().setInterval(this.get$moveSnake(), (100));
   this.makeFood();
-  this.drawSnake();
+  this.snake.paint(this.ctx);
 }
 Game.prototype.handleEvent = function(event) {
   var keycode = (0);
@@ -2057,144 +2052,76 @@ Game.prototype.handleEvent = function(event) {
   switch (keycode) {
     case (37):
 
-      this.moveLeft();
+      this.snake.moveLeft();
       break;
 
     case (38):
 
-      this.moveUp();
+      this.snake.moveUp();
       break;
 
     case (39):
 
-      this.moveRight();
+      this.snake.moveRight();
       break;
 
     case (40):
 
-      this.moveDown();
+      this.snake.moveDown();
       break;
 
   }
+  if (this.snake.x == this.xrand && this.snake.y == this.yrand) {
+    this.makeFood();
+    this.snake.snakeLength = this.snake.snakeLength + (1);
+  }
+  this.snake.paint(this.ctx);
 }
 Game.prototype.get$handleEvent = function() {
   return this.handleEvent.bind(this);
 }
-Game.prototype.drawSnake = function() {
-  var coord = [this.x, this.y];
-  if ($eq$(this.snakeBody)) return;
-  this.snakeBody.add$1(coord);
-  this.ctx.fillStyle = "rgb(200,0,0)";
-  this.ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize);
-  if (this.snakeBody.get$length() > this.snakeLength) {
-    var itemToRemove = this.snakeBody.$index((0));
-    this.snakeBody.removeRange((0), (1));
-    this.ctx.clearRect(itemToRemove.$index((0)), itemToRemove.$index((1)), this.gridSize, this.gridSize);
-  }
-  if (this.x == this.xrand && this.y == this.yrand) {
-    this.makeFood();
-    this.snakeLength = this.snakeLength + (1);
-  }
-}
 Game.prototype.moveSnake = function() {
-  switch (this.direction) {
+  switch (this.snake.direction) {
     case "left":
 
-      this.moveLeft();
+      this.snake.moveLeft();
       break;
 
     case "up":
 
-      this.moveUp();
+      this.snake.moveUp();
       break;
 
     case "right":
 
-      this.moveRight();
+      this.snake.moveRight();
       break;
 
     case "down":
 
-      this.moveDown();
+      this.snake.moveDown();
       break;
 
   }
+  if (this.snake.x == this.xrand && this.snake.y == this.yrand) {
+    this.makeFood();
+    this.snake.snakeLength = this.snake.snakeLength + (1);
+  }
+  this.snake.paint(this.ctx);
 }
 Game.prototype.get$moveSnake = function() {
   return this.moveSnake.bind(this);
-}
-Game.prototype.leftPosition = function() {
-  return this.x - this.gridSize;
-}
-Game.prototype.rightPosition = function() {
-  return this.x + this.gridSize;
-}
-Game.prototype.upPosition = function() {
-  return this.y - this.gridSize;
-}
-Game.prototype.downPosition = function() {
-  return this.y + this.gridSize;
-}
-Game.prototype.moveUp = function() {
-  if (this.upPosition() >= (0)) {
-    this.executeMove("up", "y", this.upPosition());
-  }
-  else {
-    this.whichWay("x");
-  }
-}
-Game.prototype.moveDown = function() {
-  if (this.downPosition() < this.canvas.height) {
-    this.executeMove("down", "y", this.downPosition());
-  }
-  else {
-    this.whichWay("x");
-  }
-}
-Game.prototype.moveLeft = function() {
-  if (this.leftPosition() >= (0)) {
-    this.executeMove("left", "x", this.leftPosition());
-  }
-  else {
-    this.whichWay("y");
-  }
-}
-Game.prototype.moveRight = function() {
-  if (this.rightPosition() < this.canvas.width) {
-    this.executeMove("right", "x", this.rightPosition());
-  }
-  else {
-    this.whichWay("y");
-  }
-}
-Game.prototype.executeMove = function(dirValue, axisType, axisValue) {
-  this.direction = dirValue;
-  if ($eq$(axisType, "x")) {
-    this.x = axisValue;
-  }
-  else if ($eq$(axisType, "y")) {
-    this.y = axisValue;
-  }
-  this.drawSnake();
-}
-Game.prototype.whichWay = function(axisType) {
-  if ($eq$(axisType, "x")) {
-    return (this.x > this.canvas.width / (2)) ? this.moveLeft() : this.moveRight();
-  }
-  else if ($eq$(axisType, "y")) {
-    return (this.x > this.canvas.height / (2)) ? this.moveUp() : this.moveDown();
-  }
 }
 Game.prototype.makeFood = function() {
   var rem = (0.0);
   this.xrand = (this.getRandom() * (this.canvas.width)).floor();
   this.yrand = (this.getRandom() * (this.canvas.height)).floor();
-  rem = $mod$(this.xrand, this.gridSize);
+  rem = $mod$(this.xrand, this.snake.gridSize);
   this.xrand = $sub$(this.xrand, rem);
-  rem = $mod$(this.yrand, this.gridSize);
+  rem = $mod$(this.yrand, this.snake.gridSize);
   this.yrand = $sub$(this.yrand, rem);
   this.ctx.fillStyle = "rgb(10,100,0)";
-  this.ctx.fillRect(this.xrand, this.yrand, this.gridSize, this.gridSize);
+  this.ctx.fillRect(this.xrand, this.yrand, this.snake.gridSize, this.snake.gridSize);
 }
 Game.prototype.getRandom = function() {
   var rand = (0.0);
@@ -2204,6 +2131,95 @@ Game.prototype.getRandom = function() {
   }
   this.randCount = this.randCount + (1);
   return rand;
+}
+// ********** Code for Snake **************
+function Snake(mxWidth, mxHeight) {
+  this.snakeBody = null;
+  this.x = (0);
+  this.y = (0);
+  this.gridSize = (20);
+  this.direction = "right";
+  this.snakeLength = (3);
+  this.maxWidth = (0);
+  this.maxHeight = (0);
+  this.snakeBody = [];
+  this.maxWidth = mxWidth;
+  this.maxHeight = mxHeight;
+}
+Snake.prototype.paint = function(ctx) {
+  var coord = null;
+  if ($eq$(this.snakeBody)) return;
+  if (ctx == null) return;
+  coord = [this.x, this.y];
+  this.snakeBody.add$1(coord);
+  ctx.fillStyle = "rgb(200,0,0)";
+  ctx.fillRect(this.x, this.y, this.gridSize, this.gridSize);
+  if (this.snakeBody.get$length() > this.snakeLength) {
+    var itemToRemove = this.snakeBody.$index((0));
+    this.snakeBody.removeRange((0), (1));
+    ctx.clearRect(itemToRemove.$index((0)), itemToRemove.$index((1)), this.gridSize, this.gridSize);
+  }
+}
+Snake.prototype.moveUp = function() {
+  if (this.getUpPos() >= (0)) {
+    this.executeMove("up", "y", this.getUpPos());
+  }
+  else {
+    this.whichWay("x");
+  }
+}
+Snake.prototype.moveDown = function() {
+  if (this.getDownPos() < this.maxHeight) {
+    this.executeMove("down", "y", this.getDownPos());
+  }
+  else {
+    this.whichWay("x");
+  }
+}
+Snake.prototype.moveLeft = function() {
+  if (this.getLeftPos() >= (0)) {
+    this.executeMove("left", "x", this.getLeftPos());
+  }
+  else {
+    this.whichWay("y");
+  }
+}
+Snake.prototype.moveRight = function() {
+  if (this.getRightPos() < this.maxWidth) {
+    this.executeMove("right", "x", this.getRightPos());
+  }
+  else {
+    this.whichWay("y");
+  }
+}
+Snake.prototype.executeMove = function(dirValue, axisType, axisValue) {
+  this.direction = dirValue;
+  if ($eq$(axisType, "x")) {
+    this.x = axisValue;
+  }
+  else if ($eq$(axisType, "y")) {
+    this.y = axisValue;
+  }
+}
+Snake.prototype.whichWay = function(axisType) {
+  if ($eq$(axisType, "x")) {
+    return (this.x > this.maxWidth / (2)) ? this.moveLeft() : this.moveRight();
+  }
+  else if ($eq$(axisType, "y")) {
+    return (this.x > this.maxHeight / (2)) ? this.moveUp() : this.moveDown();
+  }
+}
+Snake.prototype.getLeftPos = function() {
+  return this.x - this.gridSize;
+}
+Snake.prototype.getRightPos = function() {
+  return this.x + this.gridSize;
+}
+Snake.prototype.getUpPos = function() {
+  return this.y - this.gridSize;
+}
+Snake.prototype.getDownPos = function() {
+  return this.y + this.gridSize;
 }
 // ********** Code for top level **************
 function main() {

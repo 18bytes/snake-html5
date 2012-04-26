@@ -66,7 +66,6 @@ class Game {
   }
 
   void moveSnake() {
-
     switch (this.snake.direction) {
       case 'left':
         this.snake.moveLeft();
