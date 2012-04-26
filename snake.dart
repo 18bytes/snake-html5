@@ -6,7 +6,6 @@ void main() {
 }
 
 class Snake {
-  
   var snakeBody = null;
   int x = 0;
   int y = 0;
@@ -171,6 +170,7 @@ class Game {
         this.snake.moveDown();
         break;
     }
+    this.snake.paint(this.ctx);
   }
 
   void moveSnake() {
