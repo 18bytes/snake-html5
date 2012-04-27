@@ -13,10 +13,10 @@ class Game {
   Snake snake = null;
   
   Game() {
-    this.intialize();
+    this.initialize();
   }
 
-  void intialize() {
+  void initialize() {
     // Canvas
     this.canvas         = document.query("#canvas");
     this.ctx            = canvas.getContext("2d");
